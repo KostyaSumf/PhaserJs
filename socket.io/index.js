@@ -11,6 +11,10 @@ app.get('*', function(req, res) {
 io.on('connection', function(socket){
 	console.log('a user connected');
 
+	/*socket.on('host', function (data, ack) {
+		var room = makeGameId();
+	});*/
+
 	socket.on('chat message', function(msg){
 		io.emit('chat message', msg);
 	});
@@ -18,6 +22,24 @@ io.on('connection', function(socket){
 	socket.on('disconnect', function(){
 		console.log('user disconnected');
 	});
+
+	socket.on('ping', function (data) {
+		//do something with recived data
+		console.log(data.user);
+		socket.emit('pong', 'hello!');
+	});
+
+	socket.on('playerPosition', function(player) {
+		console.log(player);
+
+		var otherPlayerPosition = {
+			socketId: 123123,
+			playerX: player.playerX - 60,
+			playerY: player.playerY
+		};
+
+		io.emit("updatePlayerEnemie", otherPlayerPosition);
+    });
 
 	//sio.sockets.in(req.sessionID).send('Man, good to see you back!');
 });

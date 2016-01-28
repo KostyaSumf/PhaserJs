@@ -11,7 +11,7 @@
 		      #messages { list-style-type: none; margin: 0; padding: 0; }
 		      #messages li { padding: 5px 10px; }
 		      #messages li:nth-child(odd) { background: #eee; }
-    </style>
+    	</style>
 	</head>
 	<body>
 		<ul id="messages"></ul>
@@ -27,11 +27,29 @@
 			$('form').submit(function(){
 				socket.emit('chat message', $('#m').val());
 				$('#m').val('');
+
+				var data = {
+					socketId: socket.id,
+					ball: {
+						ballX: 100,
+						ballY: 100
+					}
+				};
+
+				socket.emit('gameUpdate', data);
 				return false;
 			});
 			socket.on('chat message', function(msg){
 				$('#messages').append($('<li>').text(msg));
 			});
+
+			socket.on('pong', function(data) {
+				//do something
+
+				console.log(data);
+			});
+
+			socket.emit('ping', { user: "Lotti" });
 		</script>
 	</body>
 </html>
